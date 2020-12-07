@@ -4,19 +4,14 @@ from bs4 import BeautifulSoup as bs
 from webdriver_manager.chrome import ChromeDriverManager
 import requests
 import pandas as pd
-import pymongo
 
 def scrape():
-    # Establishing connection with Mongo Database
-    conn = "mongodb://localhost:27017"
-    client = pymongo.MongoClient(conn)
-    db = client.mars_db
     # Creating dictionary that will store every scraped data
     main_dict = {}
 
     # Initiating browser
     executable_path = {"executable_path": ChromeDriverManager().install()}
-    browser = Browser("chrome", **executable_path, headless=False)
+    browser = Browser("chrome", **executable_path, headless=True)
     
     ''' NASA Mars News '''
     news_paragraph = ""
@@ -31,23 +26,19 @@ def scrape():
         try:
             news_header = soup.find_all("div",class_="content_title")[1].text.strip()
             news_paragraph =  soup.find("div",class_="article_teaser_body").text.strip()
-            # For the image to work, the prefix is needed so we can join both strings
-            mainpage = "mars.nasa.gov"
-            news_img = mainpage + soup.find("div",class_="list_image").find("img")["src"]
         except:
             news_paragraph = ""
     
     # Storing values in dict
     main_dict["news_header"] = news_header
     main_dict["news_p"] = news_paragraph
-    main_dict["news_img"] = news_img
 
     ''' JPL Mars Space Images '''
     browser.visit("https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars")
     html = browser.html
     soup = bs(html, "html.parser")
     # Again, we need the main webpage to get the the complete url for the image working.
-    jpl_mainpage = "jpl.nasa.gov"
+    jpl_mainpage = "https://www.jpl.nasa.gov"
     # We get the a tag with a unique id, and then we extract the first element containing the href link
     featured_image = soup.find_all("a", id="full_image")
     featured_image = jpl_mainpage + featured_image[0]["data-fancybox-href"]
@@ -117,16 +108,16 @@ def scrape():
             html = browser.html
             soup = bs(html, "html.parser")
             
-            # I use the prefix from the webpage and add it to the find method to get the source and title
-            main_dict[f"image{varnum}"] = "astrogeology.usgs.gov" + soup.find("img", class_="wide-image")["src"]
+            # I find all the anchor elemnts and then get the link that matches with the text "Sample" which is the direct link to the image
+            a_tags = soup.find_all("a")
+            for x in a_tags:
+                if x.text == "Sample":
+                    main_dict[f"image{varnum}"] = x["href"]
+                    break
             main_dict[f"title{varnum}"] = soup.find("h2", class_="title").text
             
             # Finally, the values are appended as a dictionary into the list
             browser.visit("https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars")
-        # # Restarting collection
-        # db.mars.drop()
-        # # Inserting the dictionary into mongo db
-        # db.mars.insert_one(main_dict)
 
     # Exit browser
     browser.quit()

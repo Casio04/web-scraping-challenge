@@ -20,7 +20,7 @@
             <div class="col-md-12">
                 <h2 style="color: #750000;">Latest Mars News</h2>
                 <h5>{{ mars.news_header }}</h5>
-                <p>{{ mars.news_p }}</p>
+                <p>{{ mars.news_p }}</p><br>
             </div>
         </div>
     </div>
@@ -29,21 +29,62 @@
             <div class="col-md-7">
                 <div class="box">
                     <h3 style="color: #750000;">Featured Mars Image </h3>
-                    <img src="{{ mars.ft_img }}" alt="Featured_image">
+                    <img src="{{mars.ft_img}}" alt="Featured Image" width="100%">
                 </div>
             </div>
-            <div class="col-md-4 offset-1">
+            <div class="col-md-4 offset-1"><br>
                 <div class="card border-secondary p-2">
                     <div class="card-header">
                         <h4 style="color: #750000;">Current Weather on Mars</h4>
                     </div>
                     <p style="text-align: justify;">{{ mars.last_tweet }}</p>
+
                 </div><br>
                 <div class="container" style="white-space: nowrap;">
                     <div class="box"> <br>
                         <h4 style="color: #750000;">Mars Facts</h4>
                         {{ mars.Html_table | safe }}
+
                     </div><br>
+                </div>
+            </div>
+        </div>
+    </div><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 style="color: #750000;" class="text-center">Mars Hemispheres</h3><br>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <img class="card-img-top" src="{{mars.image0}}" alt="1st Hemisphere">
+                    <div class="card-body">
+                        <h4 class="text-center">{{mars.title0}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <img class="card-img-top" src="{{mars.image1}}" alt="1st Hemisphere">
+                    <div class="card-body">
+                        <h4 class="text-center">{{mars.title1}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <img class="card-img-top" src="{{mars.image2}}" alt="1st Hemisphere">
+                    <div class="card-body">
+                        <h4 class="text-center">{{mars.title2}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <img class="card-img-top" src="{{mars.image3}}" alt="1st Hemisphere">
+                    <div class="card-body">
+                        <h4 class="text-center">{{mars.title3}}</h4>
+                    </div>
                 </div>
             </div>
         </div>
