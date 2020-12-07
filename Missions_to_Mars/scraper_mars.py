@@ -83,10 +83,16 @@ def scrape():
     url = "https://space-facts.com/mars/"
     # Obtaining the first table from the website
     table = pd.read_html(url)[0]
+    table = table.rename(columns={0:"Description",1:"Value"})
     # passing the table to an HTML table
-    html_table = table.to_html()
+    html_table = table.to_html(index=False)
     # replace the \n text with nothing so it can be stored on the dictionary
-    html_table.replace("\n","")
+    html_table = html_table.replace("\n","")
+    #  Adding format to the table directly with pandas
+    html_table = html_table.replace('<th>','<th class="text-center">')
+    html_table = html_table.replace('<table','<table border="1" class="table-hover w.auto pr-2">')
+    html_table = html_table.replace('border="1" class="dataframe">',"")
+    # Adding table to the dictionary 
     main_dict["Html_table"] = html_table
 
     ''' Mars Hemispheres ''' 
@@ -117,13 +123,12 @@ def scrape():
             
             # Finally, the values are appended as a dictionary into the list
             browser.visit("https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars")
-        # Restarting collection
-        db.mars.drop()
-        # Inserting the dictionary into mongo db
-        db.mars.insert_one(main_dict)
+        # # Restarting collection
+        # db.mars.drop()
+        # # Inserting the dictionary into mongo db
+        # db.mars.insert_one(main_dict)
 
     # Exit browser
     browser.quit()
-    return print("Success!")
+    return main_dict
 
-scrape()
